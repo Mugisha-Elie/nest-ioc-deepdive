@@ -41,6 +41,9 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
 
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   }
 }
