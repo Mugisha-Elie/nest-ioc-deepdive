@@ -33,7 +33,7 @@ export interface ValueProvider<T = any> {
 export type Provider<T = any> = ClassProvider<T> | ValueProvider<T> | Constructor<T>;
 
 export class MiniContainer {
-  private readonly providers = new Map<InjectionToken, Provider>();
+  private readonly providers = new Map<InjectionToken, ClassProvider | ValueProvider>();
   private readonly instances = new Map<InjectionToken, any>();
 
   register(provider: Provider): void {
@@ -62,7 +62,7 @@ export class MiniContainer {
 
     const targetClass = provider.useClass;
 
-    const paramTypes: any[] = Reflect.getMetadata("design:paramtypes", targetClass)
+    const paramTypes: any[] = Reflect.getMetadata("design:paramtypes", targetClass) || []
 
     const customTokens: Record<number, InjectionToken> =
       Reflect.getOwnMetadata(CUSTOM_INJECTION_METADATA_KEY, targetClass) || {};
