@@ -5,6 +5,8 @@ import { NOTIFICATION_SERVICE } from "./notifications/notifications.interface";
 import { ProdNotificationService } from "./notifications/prod-notification.service";
 import { DevNotificationService } from "./notifications/dev-notification.service";
 import { DATABASE_CONNECTION, SimulatedDbPool } from "./database/database-connection";
+import { AppDatabaseService } from "./database/app-database.service";
+import { DATABASE_READER } from "./database/reader.interface";
 
 const configValues: AppConfig = {
   environment: 'development',
@@ -36,7 +38,9 @@ const selectedNotifierClass =
 
         return new SimulatedDbPool(uri);
       }
-    }
+    },
+    AppDatabaseService,
+    {provide: DATABASE_READER, useExisting: AppDatabaseService}
   ]
 })
 export class AppModule {}
