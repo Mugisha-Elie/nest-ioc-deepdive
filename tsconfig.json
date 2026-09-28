@@ -47,6 +47,19 @@
     "experimentalDecorators": true,
 
     "incremental": true,
-    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
-  }
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
+
+    "removeComments": true,
+
+    "allowSyntheticDefaultImports": true,
+
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strictBindCallApply": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+  },
+
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "src/scratch/**/*"]
 }
