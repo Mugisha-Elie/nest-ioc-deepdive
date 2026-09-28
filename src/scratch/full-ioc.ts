@@ -57,7 +57,67 @@ export { PARAM_TOKENS_METADATA_KEY };
   
 
 
+export class Container {
+  private readonly recipes = new Map<InjectionToken, InternalProvider>();
+  private readonly shelf = new Map<InjectionToken, any>();
 
+  register(provider: Provider): void {
+    if (typeof provider === "function") {
+      this.recipes.set(provider, {
+        provide: provider,
+        useClass: provider
+      })
+    } else {
+      this.recipes.set(provider.provide, provider)
+    }
+  }
+
+  resolve<T>(token: InjectionToken<T>): T {
+    if (this.shelf.has(token)) {
+      return this.shelf.get(token);
+    }
+
+    const recipe = this.recipes.get(token);
+    if (!recipe) {
+      const name = typeof token === "function" ? token.name : String(token);
+      throw new Error(`[Container] No provider registered for token: ${name}`)
+    }
+
+    if ("useValue" in recipe) {
+      this.shelf.set(token, recipe.useValue);
+      return recipe.useValue
+    }
+
+    if ("useExisting" in recipe) {
+      return this.resolve(recipe.useExisting)
+    }
+
+    throw new Error(`[Container] Recipe type not yet implemeted.`);
+  }
+}
+
+const container = new Container();
+
+const CONFIG_TOKEN = Symbol("APP_CONFIG");
+const ALIAS_TOKEN = "CONFIG_ALIAS";
+
+container.register({
+  provide: CONFIG_TOKEN,
+  useValue: { port: 8080, db: "postgres" },
+});
+
+container.register({
+  provide: ALIAS_TOKEN,
+  useExisting: CONFIG_TOKEN
+});
+
+const originalConfig = container.resolve(CONFIG_TOKEN);
+console.log("Original Config:", originalConfig);
+
+const aliasedConfig = container.resolve(ALIAS_TOKEN);
+console.log("Aliased Config:", aliasedConfig);
+
+console.log("Are they identical:", originalConfig === aliasedConfig);
 
 
   
